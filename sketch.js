@@ -3,18 +3,18 @@ const Y_OFFSET = 28;
 
 const CANVAS_COLOR = 80;
 const OUTLINE_COLOR = 100;
-const SIZE_OPTIONS = [10, 15, 20, 25, 30, 35];
+const SIZE_OPTIONS = [12, 18, 24, 30, 36];
 
-const ROPE_LENGTH = 5;
 
 const COLOR_OPTIONS = [
   '#f4f6f7', '#d98880', '#c39bd3', '#7fb3d5',
-  '#76d7c4', '#7dcea0', '#f7dc6f', '#f0b27a'
+  '#76d7c4', '#f7dc6f', '#f0b27a'
 ]
 
 let canvas, pallet, brushes, reset;
 let brushColor, brushSize;
 let pen, lastPen;
+let rope_length = 5;
 
 function setup() {
   const COL1 = windowWidth - 135;
@@ -32,17 +32,18 @@ function setup() {
   for (let i = 0; i < COLOR_OPTIONS.length; i++) {
     colorButtonList.push(new SquareButton(COL1, 25 + (i * 60), 50, COLOR_OPTIONS[i]));
   }
-  colorButtonList.push(new SquareButton(COL2, 85, 50, CANVAS_COLOR));
+  colorButtonList.push(new SquareButton(COL1, 445, 50, CANVAS_COLOR));
   pallet = new ButtonGroup(colorButtonList);
 
 
   let sizeButtonList = [];
   for (let i = 0; i < SIZE_OPTIONS.length; i++) {
-    sizeButtonList.push(new SquareButton(COL2, 145 + (i * 60), 50, OUTLINE_COLOR));
+    sizeButtonList.push(new SquareButton(COL2, 205 + (i * 60), 50, OUTLINE_COLOR));
   }
 
   brushes = new ButtonGroup(sizeButtonList);
   reset = new SquareButton(COL2, 25, 50, OUTLINE_COLOR);
+  smooth = new SquareButton(COL2, 85, 50, OUTLINE_COLOR);
 
   brushColor = color('white');
   brushSize = 10;
@@ -79,18 +80,35 @@ function draw() {
   push();
   stroke(255);
   strokeWeight(10);
-  line(reset.x + 15, reset.y + 15, reset.x + reset.size - 15, reset.y + reset.size - 15);
-  line(reset.x + 15, reset.y + reset.size - 15, reset.x + reset.size - 15, reset.y + 15);
+  translate(reset.x, reset.y);
+  line(15, 15, reset.size - 15, reset.size - 15);
+  line(15, reset.size - 15, reset.size - 15, 15);
   pop();
+
+  smooth.draw();
+  push();
+  stroke(255);
+  fill(255);
+  strokeWeight(2);
+  translate(smooth.x, smooth.y);
+  textAlign(CENTER, CENTER);
+  textSize(42);
+  text(rope_length / 5, smooth.size / 2, smooth.size / 2);
+  // line(15, smooth.size - 15, smooth.size - 15, reset.size - 15);
+  // line(15, reset.size - 15, reset.size - 15, 15);
+
+  pop();
+
+
 }
 
 function touchMoved() {
   let cursor = createVector(mouseX, mouseY);
 
   let distance = pen.dist(cursor);
-  if (distance > ROPE_LENGTH) {
+  if (distance > rope_length) {
     cursor.sub(pen);
-    cursor.setMag(distance - ROPE_LENGTH);
+    cursor.setMag(distance - rope_length);
     pen.add(cursor);
   }
 
@@ -126,6 +144,11 @@ function touchStarted() {
 
   if (reset.check(mouseX, mouseY)) {
     canvas.background(CANVAS_COLOR);
+  }
+
+  if (smooth.check(mouseX, mouseY)) {
+    rope_length += 5;
+    if (rope_length > 15) rope_length = 0;
   }
 }
 
