@@ -5,7 +5,7 @@ const CANVAS_COLOR = 80;
 const OUTLINE_COLOR = 100;
 const SIZE_OPTIONS = [10, 15, 20, 25, 30, 35];
 
-const ROPE_LENGTH = 10;
+const ROPE_LENGTH = 5;
 
 const COLOR_OPTIONS = [
   '#f4f6f7', '#d98880', '#c39bd3', '#7fb3d5',
